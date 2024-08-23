@@ -2,7 +2,7 @@
  * @Author: iptoday wangdong1221@outlook.com
  * @Date: 2024-08-22 15:48:54
  * @LastEditors: iptoday wangdong1221@outlook.com
- * @LastEditTime: 2024-08-23 20:23:32
+ * @LastEditTime: 2024-08-23 20:42:58
  * @FilePath: /timing/lib/home.dart
  * 
  * Copyright (c) 2024 by iptoday wangdong1221@outlook.com, All Rights Reserved.
@@ -57,7 +57,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                 log(isRunning ? '开启任务' : '停止任务');
                 setState(() {});
                 if (isRunning) {
-                  registerTask();
+                  registerTask(true);
                 } else {
                   timerUtil.cancel();
                 }
@@ -105,11 +105,11 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
     }
   }
 
-  Future<void> registerTask() async {
+  Future<void> registerTask([bool isFirst = false]) async {
     if (!isRunning) {
       return;
     }
-    int ms = (Random().nextInt(3) + 2) * 60 * 60 * 1000;
+    int ms = isFirst ? 15 * 1000 : (Random().nextInt(3) + 2) * 60 * 60 * 1000;
     DateTime nextTime = DateTime.now().add(Duration(milliseconds: ms));
     log('任务将在${DateUtil.formatDate(nextTime, format: 'MM/dd HH:mm:ss')}执行');
     timerUtil
