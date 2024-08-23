@@ -2,7 +2,7 @@
  * @Author: iptoday wangdong1221@outlook.com
  * @Date: 2024-08-22 15:48:54
  * @LastEditors: iptoday wangdong1221@outlook.com
- * @LastEditTime: 2024-08-23 20:42:58
+ * @LastEditTime: 2024-08-23 20:47:22
  * @FilePath: /timing/lib/home.dart
  * 
  * Copyright (c) 2024 by iptoday wangdong1221@outlook.com, All Rights Reserved.
@@ -39,7 +39,6 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
           'stripcamy://app?tester=1',
           mode: LaunchMode.externalApplication,
         );
-        registerTask();
       }
     });
     super.initState();
@@ -100,6 +99,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
       log('关闭应用');
+      registerTask();
     } else if (state == AppLifecycleState.paused) {
       log('打开应用');
     }
