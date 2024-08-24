@@ -1,0 +1,54 @@
+name: Release with Version
+
+on:
+  push:
+    branches: ["master"]
+  pull_request:
+    branches: ["master"]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.x'
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Get current version
+        id: get_current_version
+        run: echo "::set-env name=CURRENT_VERSION::$(grep 'version:' pubspec.yaml | awk '{ print $2 }' | tr -d \"'\")"
+
+      - name: Compare versions and trigger release
+        id: compare_versions
+        run: |
+          if [ "${{ env.CURRENT_VERSION }}" != "${{ github.event.before }}" ]; then
+            echo "Version changed. Triggering release."
+            echo "::set-output name=trigger_release::true"
+          else
+            echo "Version not changed. Skipping release."
+            echo "::set-output name=trigger_release::false"
+          fi
+
+      - name: Build APK
+        if: steps.compare_versions.outputs.trigger_release == 'true'
+        run: flutter build apk --release
+
+      - name: Create Release
+        if: steps.compare_versions.outputs.trigger_release == 'true'
+        uses: softprops/action-gh-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VERSION: ${{ env.CURRENT_VERSION }}
+        with:
+          files: ./build/app/outputs/flutter-apk/app-release.apk
+          tag_name: ${{ env.CURRENT_VERSION }}
+          body: |
+            ### Version: ${{ env.CURRENT_VERSION }}
+            Automated APK release
