@@ -34,5 +34,6 @@ jobs:
         with:
           files: ./build/app/outputs/flutter-apk/app-release.apk
           tag_name: ${{ steps.get_version.outputs.version }}
-          release_name: Release ${{ steps.get_version.outputs.version }}
-          body: Automated APK release
+          body: |
+            ### Version: ${{ steps.get_version.outputs.version }}
+            Automated APK release
