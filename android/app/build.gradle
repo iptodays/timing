@@ -30,6 +30,9 @@ android {
     buildTypes {
         release {
             signingConfig = signingConfigs.debug
+            ndk {
+                abiFilters "armeabi-v7a"
+            }
         }
     }
 }
